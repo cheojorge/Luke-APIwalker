@@ -1,19 +1,42 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios';
 import { Card } from './Card';
-import {Connection} from './Connection'
+import { Modal } from './Modal';
+
 
 export const Form = () => {
     const [type, setType] = useState("people")
     const [id, setId] = useState(1)
     const [result, setResult] = useState()
+    const [error, setError] = useState(false)
     const [press, setPress] = useState(false)
-    Connection(type,id,setResult)
+    useEffect(() =>{
+        if(press){
+            axios.get(`https://swapi.dev/api/${type}/${id}/`)
+            .then(response=>{setResult(response.data)})
+            .catch(error => {setError(true)})
+        }
+    },[press])
     const onSubmitHandle = (e) => {
         e.preventDefault();
-        setPress(true)
-        
+        setPress(true)    
     }
-    // {press && Connection(type,id)}
+    const changeType = (e) =>{
+        setType(e.target.value)
+        setPress(false)
+        setResult('')  
+    }
+    const changeId = (e) =>{
+        setId(e.target.value)
+        setPress(false) 
+        setResult('')
+    }
+    const closeModal = () => {
+        
+        
+
+    }
+    
     return (
         <div>
             <form onSubmit={onSubmitHandle}>
@@ -22,7 +45,7 @@ export const Form = () => {
                         <label className="col-form-label">Search for: </label>
                     </div>
                     <div className="col-5">
-                        <select className="form-select" aria-label="Default select example" onChange={(e) => setType(e.target.value)}>
+                        <select className="form-select" aria-label="Default select example" onChange={changeType}>
                             <option value="people">People</option>
                             <option value="films">Films</option>
                             <option value="starships">Starships</option>
@@ -32,7 +55,7 @@ export const Form = () => {
                         </select> 
                     </div>
                     <div className="col-2">
-                        <input type="number" className="form-control" onChange = {(e) => setId(e.target.value)}/>
+                        <input type="number" className="form-control" onChange = {changeId}/>
                     </div>
                     <div className="col-auto">
                     <button type="submit" className="btn btn-primary">Search</button>
@@ -40,7 +63,14 @@ export const Form = () => {
                 </div>
                 
             </form>
-            <Card/>
+            {
+                press && result && <Card result={result}/>
+            }
+            {
+                error && <Modal closeModal={closeModal}/>
+            }
+            
+            
         </div>
     )
 }
