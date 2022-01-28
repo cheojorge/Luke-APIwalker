@@ -7,7 +7,7 @@ import { Modal } from './Modal';
 export const Form = () => {
     const [type, setType] = useState("people")
     const [id, setId] = useState(1)
-    const [result, setResult] = useState()
+    const [result, setResult] = useState([])
     const [error, setError] = useState(false)
     const [press, setPress] = useState(false)
     useEffect(() =>{
@@ -31,11 +31,13 @@ export const Form = () => {
         setPress(false) 
         setResult('')
     }
-    const closeModal = () => {
+    // const closeModal = (close) => {
+    //     console.log(close)
+    //     setError(close)
         
         
 
-    }
+    // }
     
     return (
         <div>
@@ -67,7 +69,7 @@ export const Form = () => {
                 press && result && <Card result={result}/>
             }
             {
-                error && <Modal closeModal={closeModal}/>
+                error && <Modal setError={setError}/>
             }
             
             
